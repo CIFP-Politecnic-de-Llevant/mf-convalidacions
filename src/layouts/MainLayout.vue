@@ -12,10 +12,12 @@
         />
 
         <q-toolbar-title>
-          GestSuite - Convalidacions
+          GestSuite - Convalidacions9
         </q-toolbar-title>
 
-        <Menu v-if="enableApps && (rolsUser.find(rol=>rol===rols.ADMINISTRADOR || rol===rols.DIRECTOR || rol===rols.CAP_ESTUDIS || rol===rols.ADMINISTRATIU || rol===rols.WEB))"></Menu>
+        <Menuapp></Menuapp>
+
+        <!--Menuapp v-if="enableApps && (rolsUser.find(rol=>rol===rols.ADMINISTRADOR || rol===rols.DIRECTOR || rol===rols.CAP_ESTUDIS || rol===rols.ADMINISTRATIU || rol===rols.WEB))"></Menuapp-->
       </q-toolbar>
     </q-header>
 
@@ -80,12 +82,12 @@
 import { defineComponent,defineAsyncComponent,ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import {Rol} from '../model/Rol.ts'
-
+import Menuapp from '../components/common/AppsMenu';
 
 export default defineComponent({
   name: 'MainLayout',
   components:{
-    Menu: defineAsyncComponent(()=> import('app_common/Menu.vue'))
+    Menuapp
   },
   setup () {
     const leftDrawerOpen = ref(false)

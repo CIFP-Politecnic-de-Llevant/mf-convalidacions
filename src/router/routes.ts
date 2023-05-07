@@ -18,8 +18,8 @@ const routes: RouteRecordRaw[] = [
       { path: 'solicituds', component: () => import('pages/SolicitudList.vue') },
       { path: 'solicitud', component: () => import('pages/SolicitudForm.vue') },
       { path: 'solicitud/:id', component: () => import('pages/SolicitudForm.vue') },
-      { path: 'login', component: () => import('app_common/Login.vue'), props: { urlRedirect: "/solicituds" } },
-      { path: 'logout', component: () => import('app_common/Logout.vue') },
+      { path: 'login', component: () => import('components/common/Login.vue'), props: { urlRedirect: "/solicituds" } },
+      { path: 'logout', component: () => import('components/common/Logout.vue') },
     ],
   },
   {
