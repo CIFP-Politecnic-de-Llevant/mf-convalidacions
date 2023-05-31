@@ -93,7 +93,8 @@ module.exports = configure(function (ctx) {
       chainWebpack (chain) {
         chain.optimization.delete('splitChunks');
       },*/
-      env: require('dotenv').config({ path: (process.env.CENTRE)?`.env.${process.env.CENTRE}`:`.env.dev` }).parsed,
+      //env: require('dotenv').config({ path: (process.env.CENTRE)?`.env.${process.env.CENTRE}`:`.env.dev` }).parsed,
+      env: require('dotenv').config({ path: `.env` }).parsed,
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-devServer
