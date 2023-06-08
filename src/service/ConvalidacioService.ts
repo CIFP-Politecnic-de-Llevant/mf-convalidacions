@@ -43,12 +43,16 @@ export class ConvalidacioService {
   }
 
   //TITULACIONS
-  static async getTitulacions(isPublic:boolean=false): Promise<Array<ItemConvalidacio>> {
+  static async getTitulacions(isPublic:boolean=false,all:boolean=false): Promise<Array<ItemConvalidacio>> {
     let publicSite:string = '';
     if(isPublic){
       publicSite='/public';
     }
-    const response = await axios.get(process.env.API + '/api/convalidacions'+publicSite+'/titulacions');
+    let allTitulacions:string = '';
+    if(all){
+      allTitulacions='/all';
+    }
+    const response = await axios.get(process.env.API + '/api/convalidacions'+publicSite+'/titulacions'+allTitulacions);
     const data = await response.data;
     return data.map((titulacio: any): ItemConvalidacio => {
       titulacio.composa?.map((t:ItemConvalidacio)=>{

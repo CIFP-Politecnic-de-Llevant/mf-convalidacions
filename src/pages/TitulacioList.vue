@@ -4,6 +4,11 @@
       <q-btn-group push class="q-mb-lg q-mr-lg">
         <q-btn  color="primary" label="Nova titulació" icon="add" :to="'/titulacio'" v-if="rolsUser.find(rol=>rol===rols.ADMINISTRADOR || rol===rols.DIRECTOR || rol===rols.CAP_ESTUDIS)"/>
       </q-btn-group>
+      <q-toggle
+        v-model="displayAllTitulacions"
+        label="Veure totes les titulacions? (sinó, només es veuen les de nivell superior)"
+        @update:model-value="refreshTitulacions"
+      />
     </div>
 
     <q-table
@@ -45,9 +50,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import {defineComponent} from 'vue';
 import {ConvalidacioService} from 'src/service/ConvalidacioService';
-import {CategoriaConvalidacio} from "src/model/CategoriaConvalidacio";
 import {QTableColumn} from "quasar";
 import {ItemConvalidacio} from "src/model/ItemConvalidacio";
 import {Rol} from "src/model/Rol";
@@ -62,7 +66,8 @@ export default defineComponent({
       selected: [],
       filter: '',
       rolsUser: JSON.parse(localStorage.getItem("rol")??"") || [],
-      rols: Rol
+      rols: Rol,
+      displayAllTitulacions: false
     }
   },
   created() {
@@ -124,6 +129,13 @@ export default defineComponent({
           window.location.reload();
         },1000);
       })
+    },
+    async refreshTitulacions(){
+      if(this.displayAllTitulacions){
+        this.titulacions = await ConvalidacioService.getTitulacions(false,true);
+      } else {
+        this.titulacions = await ConvalidacioService.getTitulacions();
+      }
     }
   }
 })
