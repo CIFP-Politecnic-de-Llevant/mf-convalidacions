@@ -11,13 +11,17 @@
         <q-item v-if="appWebIesManacorEnabled" clickable v-close-popup :href="appWebIesManacorURL">
           <q-item-section>Web</q-item-section>
         </q-item>
+        <q-item v-if="appGrupsCooperatiusEnabled" clickable v-close-popup :href="appGrupsCooperatiusURL">
+          <q-item-section>Grups Cooperatius</q-item-section>
+        </q-item>
       </q-list>
     </q-menu>
   </q-btn>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
+import { Todo, Meta } from './models';
 
 export default defineComponent({
   name: 'ExampleComponent',
@@ -29,7 +33,9 @@ export default defineComponent({
       appConvalidacionsEnabled: process.env.APP_ENABLE_CONVALIDACIONS,
       appConvalidacionsURL: process.env.APP_URL_CONVALIDACIONS,
       appWebIesManacorEnabled: process.env.APP_ENABLE_WEBIESMANACOR,
-      appWebIesManacorURL: process.env.APP_URL_WEBIESMANACOR
+      appWebIesManacorURL: process.env.APP_URL_WEBIESMANACOR,
+      appGrupsCooperatiusEnabled: process.env.APP_ENABLE_GRUPSCOOPERATIUS,
+      appGrupsCooperatiusURL: process.env.APP_URL_GRUPSCOOPERATIUS,
     }
   },
   methods: {
