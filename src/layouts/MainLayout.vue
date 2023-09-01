@@ -96,9 +96,9 @@ export default defineComponent({
 
     const enableGrupsCooperatius = (process.env.APP_ENABLE_GRUPSCOOPERATIUS==='true');
     const enableConvalidacions=(process.env.APP_ENABLE_CONVALIDACIONS==='true');
-    const enableWebIESManacor=(process.env.APP_ENABLE_WEBIESMANACOR==='true');
+    const enableProfessoratManager=(process.env.APP_ENABLE_PROFESSORATMANAGER==='true');
 
-    const enableApps = enableGrupsCooperatius || enableConvalidacions || enableWebIESManacor;
+    const enableApps = enableGrupsCooperatius || enableConvalidacions || enableProfessoratManager;
 
     return {
       rolsUser,
