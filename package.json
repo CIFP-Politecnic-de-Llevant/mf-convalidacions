@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "GestSuite - Convalidacions",
   "productName": "GestSuite - Convalidacions",
-  "author": "jgalmes1@iesmanacor.cat",
+  "author": "jgalmes@politecnicllevant.cat",
   "private": true,
   "scripts": {
     "test": "echo \"No test specified\" && exit 0",
