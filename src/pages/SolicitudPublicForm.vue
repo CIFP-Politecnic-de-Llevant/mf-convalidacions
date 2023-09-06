@@ -348,7 +348,7 @@ export default defineComponent({
         ok: "D'acord",
         persistent: true
       }).onOk(async () => {
-          window.location.href=this.urlRedirect;
+          //window.location.href=this.urlRedirect;
       })
     }
   }
