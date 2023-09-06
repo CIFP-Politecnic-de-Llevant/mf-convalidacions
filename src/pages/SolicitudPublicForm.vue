@@ -3,9 +3,9 @@
 
     <p class="q-mx-auto">
       <q-img
-        src="../../public/logoiesmanacor.png"
+        :src="logo"
         width="300px"
-        alt="Logo IES Manacor"
+        alt="Logo Centre"
       />
     </p>
     <p class="text-h2 q-mb-lg">
@@ -173,7 +173,9 @@ export default defineComponent({
       titulacionsFiltered: [] as ItemConvalidacio[],
       titulacionsCentreFiltered: [] as ItemConvalidacio[],
       msgstatus: '',
-      urlUpload: process.env.API + '/api/convalidacions/public/solicitud/upload'
+      urlUpload: process.env.API + '/api/convalidacions/public/solicitud/upload',
+      logo: process.env.CENTRE_LOGO,
+      urlRedirect: process.env.CENTRE_WEB
     }
   },
   created() {
@@ -346,7 +348,7 @@ export default defineComponent({
         ok: "D'acord",
         persistent: true
       }).onOk(async () => {
-          window.location.href='http://iesmanacor.cat'
+          window.location.href=this.urlRedirect;
       })
     }
   }
