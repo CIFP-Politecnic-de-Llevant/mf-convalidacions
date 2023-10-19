@@ -349,7 +349,7 @@ export default defineComponent({
         persistent: true
       }).onOk(async () => {
         /** TODO: Redirect to home */
-          //window.location.href=this.urlRedirect;
+          window.location.href=this.urlRedirect||'';
       })
     }
   }
