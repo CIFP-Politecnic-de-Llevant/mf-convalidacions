@@ -1,4 +1,4 @@
-import {axios}  from 'boot/axios'
+import {axios} from 'boot/axios'
 import {CategoriaConvalidacio} from "src/model/CategoriaConvalidacio";
 import {ItemConvalidacio} from "src/model/ItemConvalidacio";
 import {ConvalidacioConvalidacio} from "src/model/ConvalidacioConvalidacio";
@@ -265,6 +265,35 @@ export class ConvalidacioService {
       return await ConvalidacioService.getSolicitudById(solicitud.idsolicitud);
     });
     return map;
+  }
+
+  static async getSolicituds2(): Promise<Array<SolicitudConvalidacio>> {
+    const response = await axios.get(process.env.API + '/api/convalidacions/solicitud/llistat');
+    return await response.data.map(async (solicitud:any):Promise<SolicitudConvalidacio>=>{
+      let alumne:Usuari|null = null;
+      if(solicitud.alumne) {
+        const responseUser = await axios.get(process.env.API + '/api/core/usuaris/profile/'+solicitud.alumne);
+        const usuari = await responseUser.data;
+        alumne = await UsuariService.fromJSON(usuari)
+      }
+
+      return {
+        id: solicitud.idsolicitud as number,
+        alumne: alumne as Usuari,
+        estat: solicitud.estat as EstatSolicitudConvalidacio,
+        estudisEnCurs: {} as ItemConvalidacio,
+        estudisEnCursObservacions: solicitud.estudisEnCursObservacions as string,
+        estudisOrigen: [] as ItemConvalidacio[],
+        estudisOrigenManual: solicitud.estudisOrigenManual as string,
+        estudisOrigenObservacions: solicitud.estudisOrigenObservacions,
+        observacions: solicitud.observacions as string,
+        resolucions: solicitud.resolucions as ResolucioConvalidacio[],
+        nomAlumneManual: solicitud.nomAlumneManual,
+        cognomsAlumneManual: solicitud.cognomsAlumneManual,
+        files: [] as FitxerBucket[],
+        fitxerResolucio: {} as FitxerBucket
+      }
+    });
   }
 
   static async getSolicitudById(id:number): Promise<SolicitudConvalidacio> {

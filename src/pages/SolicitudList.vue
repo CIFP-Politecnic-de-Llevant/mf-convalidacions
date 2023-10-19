@@ -414,7 +414,7 @@ export default defineComponent({
       this.columnesCancelades = [...columnes];
       this.columnesCancelades.push(columnaAccions)
 
-      const solicitudsPromise: Promise<Array<SolicitudConvalidacio>> = ConvalidacioService.getSolicituds();
+      const solicitudsPromise: Promise<Array<SolicitudConvalidacio>> = ConvalidacioService.getSolicituds2();
       const solicituds:Array<SolicitudConvalidacio> = await Promise.all(await solicitudsPromise);
 
       //console.log("Solicituds",solicituds)
