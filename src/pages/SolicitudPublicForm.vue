@@ -173,7 +173,7 @@ export default defineComponent({
       titulacionsFiltered: [] as ItemConvalidacio[],
       titulacionsCentreFiltered: [] as ItemConvalidacio[],
       msgstatus: '',
-      urlUpload: process.env.API + '/api/convalidacions/public/solicitud/upload',
+      urlUpload: process.env.API + '/api/core/public/fitxerbucket/uploadlocal',
       logo: process.env.CENTRE_LOGO,
       urlRedirect: process.env.CENTRE_WEB
     }
@@ -349,7 +349,7 @@ export default defineComponent({
         persistent: true
       }).onOk(async () => {
         /** TODO: Redirect to home */
-          window.location.href=this.urlRedirect||'';
+          //window.location.href=this.urlRedirect||'';
       })
     }
   }
