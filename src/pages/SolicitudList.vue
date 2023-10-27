@@ -478,7 +478,7 @@ export default defineComponent({
       }
       //Redirect
       setTimeout(function () {
-        //window.location.reload();
+        window.location.reload();
       }, 1000);
     },
      wrapCsvValue: function(val:any, formatFn?:any, row?:any) {
