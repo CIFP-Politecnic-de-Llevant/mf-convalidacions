@@ -162,7 +162,7 @@
             <q-td :props="props">
               <div>
                 <q-btn-group push>
-                  <q-btn icon="description" color="primary" :href="props.value" target="_blank">
+                  <q-btn icon="description" color="primary" @click="downloadResolucio(props.value)" target="_blank">
                     <q-tooltip>
                       Document signat
                     </q-tooltip>
@@ -399,7 +399,7 @@ export default defineComponent({
           required: true,
           label: 'Accions',
           align: 'center',
-          field: row => row.fitxerResolucio.url,
+          field: row => row.id,
           sortable: true
         }
       ]
@@ -442,6 +442,9 @@ export default defineComponent({
           window.location.reload();
         }, 1000);
       })
+    },
+    async downloadResolucio(id:number){
+      /** TODO **/
     },
     changeEstat(id: number,estat:string) {
       let estatMsg = "";
