@@ -25,7 +25,7 @@ export class PDFService {
 
     //HEADER
     var img = new Image()
-    img.src = '../../../../logos/header_convalidacio.png'
+    img.src = process.env.APP_URL_CONVALIDACIONS + '/logos/header_convalidacio.png'
 
     doc.addImage(img, 'png', 10, 10, 210 - lMargin - rMargin, 25)
 
