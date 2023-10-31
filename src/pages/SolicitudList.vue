@@ -237,6 +237,7 @@ import {QTableColumn,exportFile, useQuasar } from "quasar";
 import {EstatSolicitudConvalidacio, SolicitudConvalidacio} from "src/model/SolicitudConvalidacio";
 import {PDFService} from "src/service/PDFService";
 import {UsuariService} from "src/service/UsuariService";
+import {FitxerBucket} from "src/model/google/FitxerBucket";
 
 
 export default defineComponent({
@@ -444,7 +445,10 @@ export default defineComponent({
       })
     },
     async downloadResolucio(id:number){
-      /** TODO **/
+      const fitxer:null | FitxerBucket = await ConvalidacioService.getURLResolucio(id);
+      if(fitxer && fitxer.url){
+        window.open(fitxer.url, '_blank');
+      }
     },
     changeEstat(id: number,estat:string) {
       let estatMsg = "";

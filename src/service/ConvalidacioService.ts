@@ -361,6 +361,24 @@ export class ConvalidacioService {
     }
   }
 
+  static async getURLResolucio(id:number):Promise<null | FitxerBucket>{
+    const response = await axios.get(process.env.API + '/api/convalidacions/solicitud/' + id);
+    const data = await response.data;
+
+    let fitxerResolucio:FitxerBucket|null = null;
+    if(data.fitxerResolucio){
+      const f: any = await axios.get(process.env.API + '/api/core/fitxerbucket/' + data.fitxerResolucio);
+      const fitxerBucket: FitxerBucket = f.data;
+      if (fitxerBucket){
+        const url: any = await axios.post(process.env.API + '/api/core/googlestorage/generate-signed-url', fitxerBucket);
+        fitxerBucket.url = url.data;
+
+        fitxerResolucio = fitxerBucket;
+      }
+    }
+    return fitxerResolucio;
+  }
+
   static async esborrarSolicitud(id:number):Promise<void>{
     console.log("ID",id);
     const solicitud:SolicitudConvalidacio = await this.getSolicitudById(id);
