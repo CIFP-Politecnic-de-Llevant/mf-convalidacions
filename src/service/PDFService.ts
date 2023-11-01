@@ -30,7 +30,8 @@ export class PDFService {
     doc.addImage(img, 'png', 10, 10, 210 - lMargin - rMargin, 25)
 
     //FETS
-    const fets1 = `Vista la sol·licitud de convalidació de mòduls de cicles formatius presentada per ${alumne.nom} ${alumne.cognom1} ${alumne.cognom2}, estudiant de ${estudiEnCurs.nom} en el centre escolar IES Manacor (Manacor) durant el curs 2021-2022.`;
+    /** TODO: posar el centre com a paràmetre i el curs acadèmic també */
+    const fets1 = `Vista la sol·licitud de convalidació de mòduls de cicles formatius presentada per ${alumne.nom} ${alumne.cognom1} ${alumne.cognom2}, estudiant de ${estudiEnCurs.nom} en el centre escolar CIFP Politècnic de Llevant (Manacor) durant el curs 2023-2024.`;
     const linesFets1 =doc.splitTextToSize(fets1, (pdfInMM-lMargin-rMargin));
     const dimFets1 = doc.getTextDimensions(linesFets1);
 
