@@ -10,7 +10,7 @@ export class UsuariService {
       return await this.fromJSON(usuari,includeGrup)
     }))
     //return usuaris;
-    return await usuaris.sort((a:Usuari,b:Usuari)=>{
+    return usuaris.sort((a:Usuari,b:Usuari)=>{
       if( (!a || !a.label) && (!b || !b.label) ){
         return 0;
       }
