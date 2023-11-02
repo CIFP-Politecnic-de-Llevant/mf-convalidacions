@@ -182,7 +182,7 @@ export class PDFService {
 
     //INTERPOSICIÓ DE RECURSOS
     const interposicio1 = `Interposició de recursos`
-    const interposicio2 = `Contra aquesta resolució es pot interposar un recurs d'alçada davant la Direcció General de Formació Professional i Ensenyaments Artístics Superiors de la Conselleria d'Educació i Formació Professional del Govern Balear, d'acord amb l'article 58 de la Llei 3/2003, de 26 de març, de règim jurídic de l'Administració de la Comunitat Autònoma de les illes Balears, i l'article 122 de la Llei 39/2015, d'1 d'octubre, del Procediment Administratiu Comú de les Administracions Públiques.`;
+    const interposicio2 = `Contra aquesta resolució es pot interposar un recurs d'alçada davant la Direcció General de Formació Professional i Formació Permanent del Professorat de la Conselleria d'Educació i Universitats del Govern de les Illes Balears, d'acord amb l'article 58 de la Llei 3/2003, de 26 de març, de règim jurídic de l'Administració de la Comunitat Autònoma de les illes Balears, i l'article 122 de la Llei 39/2015, d'1 d'octubre, del Procediment Administratiu Comú de les Administracions Públiques.`;
     const linesInterposicio2 =doc.splitTextToSize(interposicio2, (pdfInMM-lMargin-rMargin));
     const dimInterposicio2 = doc.getTextDimensions(linesInterposicio2);
 
