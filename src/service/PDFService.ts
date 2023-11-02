@@ -25,9 +25,11 @@ export class PDFService {
 
     //HEADER
     var img = new Image()
-    img.src = process.env.APP_URL_CONVALIDACIONS + '/logos/header_convalidacio.png'
+    img.src = process.env.APP_URL_CONVALIDACIONS + '/logos/GENERAL-CAIB.jpg'
 
-    doc.addImage(img, 'png', 10, 10, 210 - lMargin - rMargin, 25)
+    //Width: 210 - 15 - 15 = 180. height: 19
+    //Càlcul regla de 3: Per una foto de 2000px x 211px el càlcul seria 2000px ---> 180 aleshores 211px --> 19
+    doc.addImage(img, 'png', 10, 10, 210 - lMargin - rMargin, 19)
 
     //FETS
     /** TODO: posar el centre com a paràmetre i el curs acadèmic també */
