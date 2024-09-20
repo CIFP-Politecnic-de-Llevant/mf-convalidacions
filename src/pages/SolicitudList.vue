@@ -288,6 +288,14 @@ export default defineComponent({
           sortable: true
         },
         {
+          name: 'datacreacio',
+          required: true,
+          label: 'Data creació',
+          align: 'left',
+          field: row => (row.dataCreacio)?new Date(row.dataCreacio).toLocaleDateString():"",
+          sortable: true
+        },
+        {
           name: 'estat',
           required: true,
           label: 'Estat',
