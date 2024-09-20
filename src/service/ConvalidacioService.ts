@@ -280,6 +280,7 @@ export class ConvalidacioService {
       return {
         id: solicitud.idsolicitud as number,
         alumne: alumne as Usuari,
+        dataCreacio: solicitud.dataCreacio as Date,
         estat: solicitud.estat as EstatSolicitudConvalidacio,
         estudisEnCurs: {} as ItemConvalidacio,
         estudisEnCursObservacions: solicitud.estudisEnCursObservacions as string,
@@ -346,6 +347,7 @@ export class ConvalidacioService {
     return{
       id: data.idsolicitud as number,
       alumne: alumne as Usuari,
+      dataCreacio: data.dataCreacio as Date,
       estat: data.estat as EstatSolicitudConvalidacio,
       estudisEnCurs: encurs as ItemConvalidacio,
       estudisEnCursObservacions: data.estudisEnCursObservacions as string,
