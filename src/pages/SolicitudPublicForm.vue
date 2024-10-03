@@ -8,9 +8,10 @@
         alt="Logo Centre"
       />
     </p>
-    <p class="text-h2 q-mb-lg">
+    <p class="text-center text-h2 q-mb-lg">
       Sol·licitud de convalidacions
     </p>
+    <p class="text-center text-h1">{{cursAcademic.nom}}</p>
 
 
     <p class="text-h3 q-mt-lg">Dades Personals</p>
@@ -154,18 +155,17 @@
 import {defineComponent} from 'vue';
 import {ItemConvalidacio} from "src/model/ItemConvalidacio";
 import {ConvalidacioService} from "src/service/ConvalidacioService";
-import {Usuari} from "src/model/Usuari";
 import {SolicitudConvalidacio} from "src/model/SolicitudConvalidacio";
-import {UsuariService} from "src/service/UsuariService";
-import {jsPDF} from "jspdf";
 import {EstatResolucioConvalidacio, ResolucioConvalidacio} from "src/model/ResolucioConvalidacio";
-import {PDFService} from "src/service/PDFService";
+import {CursAcademicService} from "src/service/CursAcademicService";
+import {CursAcademic} from "src/model/gestib/CursAcademic";
 
 
 export default defineComponent({
   name: 'SolicitudForm',
   data() {
     return {
+      cursAcademic: {} as CursAcademic,
       solicitud: {} as SolicitudConvalidacio,
       estudisOrigenManualChecked: false,
       titulacions: [] as ItemConvalidacio[],
@@ -189,6 +189,8 @@ export default defineComponent({
         persistent: true, // we want the user to not be able to close it
         ok: false // we want the user to not be able to close it
       })
+
+      this.cursAcademic = await CursAcademicService.getCursAcademicActual();
 
       const titulacions:ItemConvalidacio[] = await  ConvalidacioService.getTitulacions(true);
       this.titulacions = titulacions.map((titulacio:ItemConvalidacio)=>{
