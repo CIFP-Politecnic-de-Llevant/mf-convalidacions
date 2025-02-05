@@ -162,6 +162,11 @@
             <q-td :props="props">
               <div>
                 <q-btn-group push>
+                  <q-btn icon="visibility" color="primary" :to="'/solicitud-resolta/'+props.value">
+                    <q-tooltip>
+                      Veure sol·licitud
+                    </q-tooltip>
+                  </q-btn>
                   <q-btn icon="description" color="primary" @click="downloadResolucio(props.value)" target="_blank">
                     <q-tooltip>
                       Document signat
