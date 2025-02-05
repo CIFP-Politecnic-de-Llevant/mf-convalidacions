@@ -18,6 +18,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'solicituds', component: () => import('pages/SolicitudList.vue') },
       { path: 'solicitud', component: () => import('pages/SolicitudForm.vue') },
       { path: 'solicitud/:id', component: () => import('pages/SolicitudForm.vue') },
+      { path: 'solicitud-resolta/:id', component: () => import('pages/SolicitudViewForm.vue') },
       { path: 'login', component: () => import('components/common/Login.vue'), props: { urlRedirect: "/solicituds" } },
       { path: 'logout', component: () => import('components/common/Logout.vue') },
     ],
