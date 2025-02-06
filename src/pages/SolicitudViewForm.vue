@@ -11,7 +11,7 @@
 
     <p class="text-h3  q-mt-lg">Estudis cursats anteriorment</p>
 
-    <p>{{solicitud.estudisOrigen.map(e=>e.nom).join(", ")}}</p>
+    <p>{{(solicitud.estudisOrigen)?solicitud.estudisOrigen.map(e=>e.nom).join(", "):"Sense estudis d'origen"}}</p>
 
     <div v-for="estudiOrigen in solicitud.estudisOrigen">
       <p class="text-h6">- {{estudiOrigen.categoria.nom}}: {{estudiOrigen.codi}}-{{estudiOrigen.nom}}</p>
@@ -211,7 +211,6 @@ export default defineComponent({
           }
           this.solicitud.resolucions.push(resolucio)
         }
-        this.calcularConvalidacions();
 
         console.log(JSON.parse(JSON.stringify(this.solicitud)));
       }
@@ -243,55 +242,6 @@ export default defineComponent({
         const needle = val.toLowerCase()
         this.titulacionsFiltered = this.titulacions.filter(i=>i.label!.toLowerCase().indexOf(needle) > -1 || false);
       })
-    },
-    calcularConvalidacions: function(){
-
-      //Necessitem fer el next Tick perquè el model s'actualitza després de la cridada.
-      this.$nextTick(async function () {
-        const convalidacions = await ConvalidacioService.calcularConvalidacions(this.solicitud)
-
-        let resolucionsOld = new Array<ResolucioConvalidacio>();
-        if(this.solicitud.resolucions) {
-          resolucionsOld = [...this.solicitud.resolucions];
-          console.log("resolucions old", JSON.parse(JSON.stringify(resolucionsOld)));
-        }
-
-        this.solicitud.resolucions = new Array<ResolucioConvalidacio>();
-
-        const estudisEnCurs:ItemConvalidacio[]|undefined = this.solicitud.estudisEnCurs?.composa?.sort((a:any,b:any)=>(a.codi)?a.codi.localeCompare(b.codi):-1);
-
-        for(let estudiEnCurs of estudisEnCurs||[]){
-          const estudi:ItemConvalidacio = await ConvalidacioService.mapToItemConvalidacio(estudiEnCurs);
-
-          let estat = EstatResolucioConvalidacio.PENDENT;
-          let qualificacio = "C-5";
-
-          estudi.selected = false;
-          if(resolucionsOld.find(r=>r.estudi.id===estudi.id)){
-            const rOld:any = resolucionsOld.find(r=>r.estudi.id===estudi.id)!;
-            estat = rOld.estat;
-            qualificacio = rOld.qualificacio;
-            estudi.selected = rOld.estudi.selected;
-          } else if(convalidacions.find(c=>c.id===estudi.id)){
-            estat = EstatResolucioConvalidacio.APROVAT;
-            estudi.selected = true;
-          }
-
-          //Afegim un asterisc al nom si és una convalidació
-          if(convalidacions.find(c=>c.id===estudi.id)){
-            estudi.nom += " (**)";
-          }
-
-          const resolucio:ResolucioConvalidacio = {
-            estat: estat,
-            qualificacio: qualificacio,
-            estudi: estudi,
-            observacions: ""
-          }
-          this.solicitud.resolucions.push(resolucio)
-        }
-      })
-
     },
     mapEstatResolucioToLabel(estat:EstatResolucioConvalidacio):string{
       if(estat===EstatResolucioConvalidacio.APROVAT){
@@ -348,10 +298,12 @@ export default defineComponent({
 
       const solicitud = Object.assign({},this.solicitud);
       //Agafem només els estudis orígen seleccionats
-      solicitud.estudisOrigen = solicitud.estudisOrigen.map(est=>{
-        est.composa = est.composa?.filter((estfill:any)=>estfill.selected)
-        return est
-      })
+      if(solicitud.estudisOrigen) {
+        solicitud.estudisOrigen = solicitud.estudisOrigen.map(est => {
+          est.composa = est.composa?.filter((estfill: any) => estfill.selected)
+          return est
+        })
+      }
       //Agafem només les resolucions que estiguin seleccionades
       solicitud.resolucions = solicitud.resolucions.filter(r=>r.estudi.selected);
       await ConvalidacioService.saveSolicitud(solicitud);
