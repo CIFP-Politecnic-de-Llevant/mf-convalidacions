@@ -125,6 +125,7 @@ export default defineComponent({
       console.log("Entra nou valor")
       const itemConvalidacio:ItemConvalidacio = this.items[0];
       this.titulacio.composa?.push(itemConvalidacio)
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     },
     deleteItemConvalidacio: function(item:ItemConvalidacio){
       this.titulacio.composa = this.titulacio.composa?.filter((it:ItemConvalidacio)=>it.id!==item.id);
