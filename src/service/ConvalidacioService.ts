@@ -71,6 +71,23 @@ export class ConvalidacioService {
     });
   }
 
+  //TITULACIONS Loe
+  static async getTitulacionsLoe(): Promise<Array<ItemConvalidacio>> {
+    const response = await axios.get(process.env.API + '/api/convalidacions/titulacions/loe');
+    const data = await response.data;
+    return data.map((titulacio: any): ItemConvalidacio => {
+      return {
+        id: titulacio.iditem,
+        codi: titulacio.codi,
+        nom: titulacio.nom,
+        nomOriginal: titulacio.nomOriginal,
+        impartitAlCentre: titulacio.impartitAlCentre,
+        composa: titulacio.composa,
+        categoria: titulacio.categoria,
+      }
+    });
+  }
+
   static async getTitulacionsImpartidesAlCentre(isPublic:boolean=false): Promise<Array<ItemConvalidacio>> {
     let publicSite:string = '';
     if(isPublic){
@@ -282,7 +299,7 @@ export class ConvalidacioService {
         alumne: alumne as Usuari,
         dataCreacio: solicitud.dataCreacio as string,
         estat: solicitud.estat as EstatSolicitudConvalidacio,
-        estudisEnCurs: {} as ItemConvalidacio,
+        estudisEnCurs: solicitud.estudisEnCurs as ItemConvalidacio,
         estudisEnCursObservacions: solicitud.estudisEnCursObservacions as string,
         estudisOrigen: [] as ItemConvalidacio[],
         estudisOrigenManual: solicitud.estudisOrigenManual as string,

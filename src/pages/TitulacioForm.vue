@@ -3,9 +3,9 @@
 
     <p class="text-h3">{{titulacio.codi || 'Sense Codi'}} - {{titulacio.nom || 'Sense Nom'}}</p>
 
-    <q-input v-model="titulacio.codi" label="Codi" @update:model-value="checkCodi()" />
-    <q-input v-model="titulacio.nom" label="Nom" @update:model-value="checkNom()" />
-    <q-input v-model="titulacio.nomOriginal" label="Nom original" @update:model-value="checkNom()" />
+    <q-input v-model="titulacio.codi" label="Codi" @update:model-value="hasChanged()" @blur="checkCodi()" />
+    <q-input v-model="titulacio.nom" label="Nom" />
+    <q-input v-model="titulacio.nomOriginal" label="Nom original" />
     <q-checkbox v-model="titulacio.impartitAlCentre" label="Els estudis s'imparteixen al centre?" />
 
     <q-select
@@ -14,6 +14,16 @@
       label="Categoria titulació"
       class="q-mb-lg"
     />
+
+<!--    <q-select-->
+<!--      v-if="titulacio.categoria && titulacio.categoria.id == 4"-->
+<!--      v-model="selectedLoe"-->
+<!--      :options="estudisLoe"-->
+<!--      label="Estudi Relacionats"-->
+<!--      option-value="id"-->
+<!--      option-label="nom"-->
+<!--      class="q-mb-lg"-->
+<!--    />-->
 
     <p class="text-h5">Composició del títol depenent d'altres ítems</p>
 
@@ -56,6 +66,10 @@
       </template>
     </q-list>
 
+    <div>
+      <q-btn color="primary" label="Nou ítem del títol" icon="edit" @click="nouItemConvalidacio" class="q-mb-lg q-mt-lg"/>
+    </div>
+
     <q-banner v-if="msgstatus" inline-actions class="text-white bg-red q-my-md">
       {{msgstatus}}
     </q-banner>
@@ -85,6 +99,9 @@ export default defineComponent({
       itemsFiltered: [] as ItemConvalidacio[],
       itemsSelected: [] as ItemConvalidacio[],
       msgstatus: '',
+      codeHasChanged: false as boolean
+      // estudisLoe: [] as ItemConvalidacio[],
+      // selectedLoe: {} as ItemConvalidacio
     }
   },
   created() {
@@ -109,7 +126,7 @@ export default defineComponent({
       const items:ItemConvalidacio[] = await ConvalidacioService.getItems();
       this.items = items
 
-      const id:string = (this.$route.params.id)?this.$route.params.id+'':'';
+      const id:string = (this.$route.params.id) ? this.$route.params.id+'' : '';
 
       if(id && id!='') {
         console.log(id,this.$route.params.id)
@@ -118,6 +135,17 @@ export default defineComponent({
 
         this.titulacio = titulacio;
       }
+
+      // const estudisLoe:Array<ItemConvalidacio>= await ConvalidacioService.getTitulacionsLoe();
+      //
+      // this.estudisLoe = estudisLoe.map((estudi:ItemConvalidacio)=>{
+      //   estudi.nom = estudi.codi + ' - ' + estudi.nom;
+      //   return estudi;
+      // });
+      //
+      // if (this.estudisLoe.length > 0) {
+      //   this.selectedLoe = this.estudisLoe[0];
+      // }
 
       await dialog.hide();
     },
@@ -155,10 +183,13 @@ export default defineComponent({
         })
       }
     },
+    hasChanged: function(){
+      this.codeHasChanged = true;
+    },
     checkCodi: async function(){
       console.log("Entra check codi")
       const itemCodi:ItemConvalidacio|null = await ConvalidacioService.getTitulacioByCodi(this.titulacio.codi);
-      if(itemCodi!==null){
+      if(this.codeHasChanged && itemCodi!==null){
         this.$q.dialog({
           title: 'Alerta!',
           message: 'Ja existeix una titulació amb aquest codi',
@@ -168,17 +199,25 @@ export default defineComponent({
       }
     },
     save: async function(){
+      if(!this.titulacio.codi){
+        this.msgstatus = "Falta inserir el codi de la titulació";
+        return;
+      }
+      if(!this.titulacio.nom){
+        this.msgstatus = "Falta inserir el nom de la titulació";
+        return;
+      }
       if(!this.titulacio.categoria){
         this.msgstatus = "Falta inserir la categoria de la titulació";
         return;
       }
-      const itemNom:ItemConvalidacio|null = await ConvalidacioService.getTitulacioByNom(this.titulacio.nom);
+
+      // const itemNom:ItemConvalidacio|null = await ConvalidacioService.getTitulacioByNom(this.titulacio.nom);
       const itemCodi:ItemConvalidacio|null = await ConvalidacioService.getTitulacioByCodi(this.titulacio.codi);
-      console.log("itemNom i itemCodi",itemNom,itemCodi)
-      if(itemNom!==null || itemCodi!==null){
+      if ((!this.titulacio.id && itemCodi!==null) || (this.titulacio.id && this.codeHasChanged && itemCodi!==null)) {
         this.$q.dialog({
           title: 'Confirmar acció',
-          message: 'Ja existeix una titulació amb aquest nom o codi, vol continuar?',
+          message: 'Ja existeix una titulació amb aquest codi, vol continuar?',
           ok: "D'acord",
           cancel: "Cancel·la",
           persistent: true

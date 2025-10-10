@@ -33,7 +33,7 @@ export class PDFService {
 
     //FETS
     /** TODO: posar el centre com a paràmetre i el curs acadèmic també */
-    const fets1 = `Vista la sol·licitud de convalidació de mòduls de cicles formatius presentada per ${alumne.nom} ${alumne.cognom1} ${alumne.cognom2}, estudiant de ${estudiEnCurs.nom} en el centre escolar CIFP Politècnic de Llevant (Manacor) durant el curs 2023-2024.`;
+    const fets1 = `Vista la sol·licitud de convalidació de mòduls de cicles formatius presentada per ${alumne.nom} ${alumne.cognom1} ${alumne.cognom2}, estudiant de ${estudiEnCurs.nom} en el centre escolar CIFP Politècnic de Llevant (Manacor) durant el curs 2025-2026.`;
     const linesFets1 =doc.splitTextToSize(fets1, (pdfInMM-lMargin-rMargin));
     const dimFets1 = doc.getTextDimensions(linesFets1);
 
@@ -202,7 +202,7 @@ export class PDFService {
     //SIGNATURA
     const avui = moment().format('LLLL');
     const signatura1 = "Signatura";
-    const signatura2 = `El present document està signat digitalment per **22116** Miquel Amengual Gayà (R:S0768137B) el ${avui}`
+    const signatura2 = `El present document està signat digitalment per **22116** Miquel Amengual Gayà (R:S0700142C) el ${avui}`
     const linesSignatura2 =doc.splitTextToSize(signatura2, (pdfInMM-lMargin-rMargin));
     const dimSignatura2 = doc.getTextDimensions(linesSignatura2);
 
