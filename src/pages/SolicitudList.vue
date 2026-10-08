@@ -99,7 +99,7 @@
         </q-table>
       </q-tab-panel>
       <q-tab-panel name="pendent_signatura">
-        <q-btn class="q-ma-md" label="Signar resolucions" color="primary" @click="confirmSignatura = true"/>
+        <q-btn class="q-ma-md" label="Signar resolucions" color="primary" :loading="signant" :disable="signant" @click="confirmSignatura = true"/>
         <q-table
           title="Sol·licituds pendent de signatura"
           :rows="solicitudsPendentSignatura"
@@ -228,7 +228,7 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Cancel·la" color="primary" v-close-popup/>
-          <q-btn label="Signar" color="primary" @click="signaSolicituds" v-close-popup/>
+          <q-btn label="Signar" color="primary" :disable="signant" @click="signaSolicituds" v-close-popup/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -267,6 +267,7 @@ export default defineComponent({
       filterCancelades: '',
       tab: ref('pendent_resolucio'),
       confirmSignatura: false,
+      signant: false,
       fileSignature: null,
       passwordSignature: ''
     }
@@ -491,10 +492,22 @@ export default defineComponent({
       })
     },
     signaSolicituds: async function () {
-      const solicituds = this.selectedPendentSignatura;
+      //Evitem llançar la signatura dues vegades (els correus s'enviarien repetits)
+      if(this.signant){
+        return;
+      }
+      this.signant = true;
+
+      //Copiam i buidam la selecció perquè no es puguin tornar a signar les mateixes
+      const solicituds = [...this.selectedPendentSignatura];
+      this.selectedPendentSignatura = [];
 
       for(let solicitud of solicituds){
-        await PDFService.generateSolicitud(solicitud,false,this.fileSignature,this.passwordSignature)
+        try {
+          await PDFService.generateSolicitud(solicitud,false,this.fileSignature,this.passwordSignature)
+        } catch (e) {
+          console.error("Error signant la sol·licitud", solicitud, e);
+        }
       }
       //Redirect
       setTimeout(function () {
