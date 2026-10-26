@@ -33,7 +33,7 @@ export class PDFService {
 
     //FETS
     /** TODO: posar el centre com a paràmetre i el curs acadèmic també */
-    const fets1 = `Vista la sol·licitud de convalidació de mòduls de cicles formatius presentada per ${alumne.nom} ${alumne.cognom1} ${alumne.cognom2}, estudiant de ${estudiEnCurs.nom} en el centre escolar CIFP Politècnic de Llevant (Manacor) durant el curs 2025-2026.`;
+    const fets1 = `Vista la sol·licitud de convalidació de mòduls de cicles formatius presentada per ${alumne.nom} ${alumne.cognom1} ${alumne.cognom2}, estudiant de ${estudiEnCurs.nom} en el centre escolar CIFP Politècnic de Llevant (Manacor) durant el curs 2026-2027.`;
     const linesFets1 =doc.splitTextToSize(fets1, (pdfInMM-lMargin-rMargin));
     const dimFets1 = doc.getTextDimensions(linesFets1);
 
@@ -52,11 +52,11 @@ export class PDFService {
 
 
     //FONAMENTS DE DRET
-    const fonaments1 = `Atès l'article 38 del Reial Decret 1147/2011, de 29 de juliol, pel qual s'estableix l'ordenació general de la formació professional del sistema educatiu;`;
+    const fonaments1 = `Atesos els articles 125, 126 i 127 del Reial Decret 659/2023 de 18 de juliol, pel qual s’estableix l’ordenació del Sistema de Formació Professional.`;
     const linesFonaments1 =doc.splitTextToSize(fonaments1, (pdfInMM-lMargin-rMargin));
     const dimFonaments1 = doc.getTextDimensions(linesFonaments1);
 
-    const fonaments2 = `Atesos els articles 18 i 35 del Decret 91/2012, de 23 de novembre, pel qual s'estableix l'ordenació general de la formació professional del sistema educatiu en el sistema integrat de formació professional a les Illes Balears;`;
+    const fonaments2 = `Atesos els articles 71, 72 i 73 del Decret 39/2025, d’1 d’agost, d’ordenació de la Formació Professional de les Illes Balears.`;
     const linesFonaments2 =doc.splitTextToSize(fonaments2, (pdfInMM-lMargin-rMargin));
     const dimFonaments2 = doc.getTextDimensions(linesFonaments2);
 
