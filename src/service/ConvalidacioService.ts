@@ -309,7 +309,8 @@ export class ConvalidacioService {
         nomAlumneManual: solicitud.nomAlumneManual,
         cognomsAlumneManual: solicitud.cognomsAlumneManual,
         files: [] as FitxerBucket[],
-        fitxerResolucio: {} as FitxerBucket
+        fitxerResolucio: {} as FitxerBucket,
+        cursAcademic: solicitud.cursAcademic as number
       }
     });
   }
@@ -376,7 +377,8 @@ export class ConvalidacioService {
       nomAlumneManual: data.nomAlumneManual,
       cognomsAlumneManual: data.cognomsAlumneManual,
       files: fitxersAlumne as FitxerBucket[],
-      fitxerResolucio: fitxerResolucio as FitxerBucket
+      fitxerResolucio: fitxerResolucio as FitxerBucket,
+      cursAcademic: data.cursAcademic as number
     }
   }
 

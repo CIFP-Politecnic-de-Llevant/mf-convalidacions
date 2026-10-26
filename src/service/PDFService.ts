@@ -2,6 +2,7 @@ import {axios} from "boot/axios";
 import {jsPDF} from "jspdf";
 import {EstatResolucioConvalidacio} from "src/model/ResolucioConvalidacio";
 import {SolicitudConvalidacio} from "src/model/SolicitudConvalidacio";
+import {CursAcademicService} from "src/service/CursAcademicService";
 import moment from 'moment'
 
 export class PDFService {
@@ -10,6 +11,9 @@ export class PDFService {
 
     const alumne = solicitud.alumne!;
     const estudiEnCurs = solicitud.estudisEnCurs;
+    const cursAcademic = solicitud.cursAcademic
+      ? await CursAcademicService.getCursAcademicById(solicitud.cursAcademic)
+      : await CursAcademicService.getCursAcademicActual();
 
 
     // Default export is a4 paper, portrait, using millimeters for units
@@ -32,8 +36,8 @@ export class PDFService {
     doc.addImage(img, 'png', 10, 10, 210 - lMargin - rMargin, 19)
 
     //FETS
-    /** TODO: posar el centre com a paràmetre i el curs acadèmic també */
-    const fets1 = `Vista la sol·licitud de convalidació de mòduls de cicles formatius presentada per ${alumne.nom} ${alumne.cognom1} ${alumne.cognom2}, estudiant de ${estudiEnCurs.nom} en el centre escolar CIFP Politècnic de Llevant (Manacor) durant el curs 2026-2027.`;
+    /** TODO: posar el centre com a paràmetre */
+    const fets1 = `Vista la sol·licitud de convalidació de mòduls de cicles formatius presentada per ${alumne.nom} ${alumne.cognom1} ${alumne.cognom2}, estudiant de ${estudiEnCurs.nom} en el centre escolar CIFP Politècnic de Llevant (Manacor) durant el curs ${cursAcademic.nom}.`;
     const linesFets1 =doc.splitTextToSize(fets1, (pdfInMM-lMargin-rMargin));
     const dimFets1 = doc.getTextDimensions(linesFets1);
 

@@ -23,4 +23,5 @@ export interface SolicitudConvalidacio {
   cognomsAlumneManual?: string;
   files?: Array<FitxerBucket>;
   fitxerResolucio?: FitxerBucket;
+  cursAcademic?: number;
 }

@@ -7,8 +7,19 @@ export class CursAcademicService {
     const response = await axios.get(process.env.API + '/api/core/cursAcademic/actual');
     const cursAcademic = await response.data;
 
+    return this.fromJSON(cursAcademic);
+  }
+
+  static async getCursAcademicById(id:number): Promise<CursAcademic> {
+    const response = await axios.get(process.env.API + '/api/core/cursAcademic/getById/' + id);
+    const cursAcademic = await response.data;
+
+    return this.fromJSON(cursAcademic);
+  }
+
+  private static fromJSON(cursAcademic:any): CursAcademic {
     return {
-      id: cursAcademic.id,
+      id: cursAcademic.idcursAcademic,
       nom: cursAcademic.nom,
       actual: cursAcademic.actual
     };
