@@ -10,6 +10,7 @@ export enum EstatSolicitudConvalidacio {
 export interface SolicitudConvalidacio {
   id?: number;
   dataCreacio?: string;
+  dataSignatura?: string;
   estat: EstatSolicitudConvalidacio;
   observacions?: string;
   estudisOrigen: Array<ItemConvalidacio>;

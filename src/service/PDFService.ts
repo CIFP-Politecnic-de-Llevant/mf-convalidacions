@@ -6,7 +6,7 @@ import {CursAcademicService} from "src/service/CursAcademicService";
 import moment from 'moment'
 
 export class PDFService {
-  static async generateSolicitud(solicitud:SolicitudConvalidacio,download:boolean,signatura?:any,password?:string): Promise<void> {
+  static async generateSolicitud(solicitud:SolicitudConvalidacio,download:boolean,signatura?:any,password?:string,resignatura?:{correccio:boolean,notificarTutors:boolean}): Promise<void> {
     moment.locale('ca');
 
     const alumne = solicitud.alumne!;
@@ -240,6 +240,11 @@ export class PDFService {
       formData.append("signatura", signatura);
       formData.append("password",password!)
       formData.append("idsolicitud",solicitud.id!.toString());
+      if(resignatura){
+        formData.append("resignar","true");
+        formData.append("correccio",resignatura.correccio.toString());
+        formData.append("notificarTutors",resignatura.notificarTutors.toString());
+      }
 
       const response = await axios.post(
         process.env.API + "/api/convalidacions/pdf/signfile",

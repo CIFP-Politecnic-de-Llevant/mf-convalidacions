@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex column" padding>
+  <q-page class="column no-wrap" padding>
     <div>
       <q-btn-group push class="q-mb-lg q-mr-lg">
         <q-btn color="primary" label="Nova sol·licitud" icon="add" :to="'/solicitud'"/>
@@ -31,6 +31,7 @@
           :rows="solicitudsPendentResolucio"
           :columns="columnesPendentResolucio"
           :filter="filterPendentResolucio"
+          wrap-cells
         >
           <template v-slot:top-right>
             <q-input borderless dense debounce="300" v-model="filterPendentResolucio" placeholder="Cerca">
@@ -70,6 +71,7 @@
           :rows="solicitudsStandBy"
           :columns="columnesStandBy"
           :filter="filterStandBy"
+          wrap-cells
         >
           <template v-slot:top-right>
             <q-input borderless dense debounce="300" v-model="filterStandBy" placeholder="Cerca">
@@ -108,6 +110,7 @@
           row-key="id"
           selection="multiple"
           v-model:selected="selectedPendentSignatura"
+          wrap-cells
         >
           <template v-slot:top-right>
             <q-input borderless dense debounce="300" v-model="filterPendentSignatura" placeholder="Cerca">
@@ -137,43 +140,67 @@
         </q-table>
       </q-tab-panel>
       <q-tab-panel name="resolts">
-        <q-btn
-          color="primary"
-          icon-right="archive"
-          label="Exportar dades a csv"
-          no-caps
-          class="q-my-lg"
-          @click="exportTable"
-        />
+        <div class="row items-center q-gutter-sm q-mb-md">
+          <q-btn
+            color="primary"
+            icon-right="archive"
+            label="Exportar dades a csv"
+            no-caps
+            @click="exportTable"
+          />
+          <q-btn label="Tornar a signar resolucions" color="primary" :loading="signant" :disable="signant || selectedResoltes.length===0" @click="confirmResignatura = true"/>
+          <span v-if="selectedResoltes.length>0" class="text-grey-8">{{ selectedResoltes.length }} seleccionades</span>
+        </div>
         <q-table
           title="Sol·licituds resoltes"
-          :rows="solicitudsResoltes"
+          :rows="solicitudsResoltesFiltrades"
           :columns="columnesResoltes"
-          :filter="filterResoltes"
+          row-key="id"
+          selection="multiple"
+          v-model:selected="selectedResoltes"
+          v-model:pagination="paginacioResoltes"
+          :rows-per-page-options="[10,25,50,100,0]"
+          rows-per-page-label="Files per pàgina"
+          wrap-cells
+          dense
+          flat
+          bordered
         >
-          <template v-slot:top-right>
-            <q-input borderless dense debounce="300" v-model="filterResoltes" placeholder="Cerca">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
+          <template v-slot:top>
+            <div class="row items-end q-gutter-sm full-width">
+              <div class="text-h6 q-mr-md">Sol·licituds resoltes</div>
+              <q-input dense outlined stack-label clearable type="date" v-model="filtreSignaturaDes" label="Signades des de" style="width: 175px"/>
+              <q-input dense outlined stack-label clearable type="date" v-model="filtreSignaturaFins" label="Signades fins a" style="width: 175px"/>
+              <q-btn flat dense no-caps color="primary" icon="event" label="Aquest curs" @click="filtraCursActual">
+                <q-tooltip>Des de l'1 de setembre del curs actual fins avui</q-tooltip>
+              </q-btn>
+              <q-space/>
+              <q-input dense outlined debounce="300" v-model="filterResoltes" placeholder="Cerca" style="min-width: 200px">
+                <template v-slot:append>
+                  <q-icon name="search"/>
+                </template>
+              </q-input>
+            </div>
+            <div class="row items-center q-gutter-sm full-width q-mt-sm">
+              <span class="text-grey-8">{{ nombreResoltesVisibles }} de {{ solicitudsResoltes.length }} sol·licituds</span>
+              <q-btn flat dense no-caps color="primary" icon="done_all" :label="'Seleccionar les ' + nombreResoltesVisibles + ' filtrades'" :disable="nombreResoltesVisibles===0" @click="seleccionaResoltesFiltrades"/>
+              <q-btn v-if="selectedResoltes.length>0" flat dense no-caps color="grey-8" icon="clear" label="Treure la selecció" @click="selectedResoltes = []"/>
+            </div>
           </template>
           <template v-slot:body-cell-accions="props">
             <q-td :props="props">
-              <div>
-                <q-btn-group push>
-                  <q-btn icon="visibility" color="primary" :to="'/solicitud-resolta/'+props.value">
-                    <q-tooltip>
-                      Veure sol·licitud
-                    </q-tooltip>
-                  </q-btn>
-                  <q-btn icon="description" color="primary" @click="downloadResolucio(props.value)" target="_blank">
-                    <q-tooltip>
-                      Document signat
-                    </q-tooltip>
-                  </q-btn>
-                </q-btn-group>
-              </div>
+              <q-btn-group push>
+                <q-btn dense icon="visibility" color="primary" :to="'/solicitud-resolta/'+props.value">
+                  <q-tooltip>
+                    Veure sol·licitud
+                  </q-tooltip>
+                </q-btn>
+                <q-btn dense icon="description" color="primary" @click="downloadResolucio(props.value)" target="_blank">
+                  <q-tooltip>
+                    Document signat
+                  </q-tooltip>
+                </q-btn>
+              </q-btn-group>
             </q-td>
           </template>
         </q-table>
@@ -184,6 +211,7 @@
           :rows="solicitudsCancelades"
           :columns="columnesCancelades"
           :filter="filterCancelades"
+          wrap-cells
         >
           <template v-slot:top-right>
             <q-input borderless dense debounce="300" v-model="filterCancelades" placeholder="Cerca">
@@ -232,6 +260,27 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <q-dialog v-model="confirmResignatura" persistent>
+      <q-card>
+        <q-card-section class="flex column">
+          <div class="row items-center">
+            <q-avatar icon="fingerprint" color="primary" text-color="white"/>
+            <span class="q-ml-sm">Està segur que vol tornar a signar {{ selectedResoltes.length }} resolucions?</span>
+          </div>
+            <q-file v-model="fileSignature" label="Fitxer signatura" />
+            <q-input v-model="passwordSignature" type="password" placeholder="Contrasenya signatura" hint="La contrasenya NO es desa en cap cas."/>
+            <q-toggle v-model="resignaturaCorreccio" label="El correu indica que és una resolució corregida"/>
+            <q-toggle v-model="resignaturaNotificarTutors" label="Enviar còpia als tutors (si no, només a l'alumne)"/>
+            <span class="q-ml-sm">Es generarà una resolució nova amb la data d'avui i se n'enviarà el correu. Aquesta acció no es pot desfer.</span>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel·la" color="primary" v-close-popup/>
+          <q-btn label="Tornar a signar" color="primary" :disable="signant" @click="resignaSolicituds" v-close-popup/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -260,16 +309,64 @@ export default defineComponent({
       columnesCancelades: [] as QTableColumn[],
       columnesStandBy: [] as QTableColumn[],
       selectedPendentSignatura: [],
+      selectedResoltes: [] as SolicitudConvalidacio[],
       filterPendentResolucio: '',
       filterStandBy: '',
       filterPendentSignatura: '',
       filterResoltes: '',
       filterCancelades: '',
+      filtreSignaturaDes: '',
+      filtreSignaturaFins: '',
+      paginacioResoltes: {sortBy: 'datasignatura', descending: true, page: 1, rowsPerPage: 25},
       tab: ref('pendent_resolucio'),
       confirmSignatura: false,
+      confirmResignatura: false,
+      resignaturaCorreccio: true,
+      resignaturaNotificarTutors: false,
       signant: false,
       fileSignature: null,
       passwordSignature: ''
+    }
+  },
+  computed: {
+    solicitudsResoltesFiltrades(): SolicitudConvalidacio[] {
+      const des = this.filtreSignaturaDes ? new Date(this.filtreSignaturaDes + 'T00:00:00') : null;
+      const fins = this.filtreSignaturaFins ? new Date(this.filtreSignaturaFins + 'T23:59:59.999') : null;
+      const cerca = (this.filterResoltes || '').toLowerCase();
+
+      return this.solicitudsResoltes.filter(s => {
+        if (des || fins) {
+          if (!s.dataSignatura) {
+            return false;
+          }
+          const dataSignatura = new Date(s.dataSignatura);
+          if ((des && dataSignatura < des) || (fins && dataSignatura > fins)) {
+            return false;
+          }
+        }
+        if (cerca) {
+          //Mateixa cerca que fa la q-table: el text a qualsevol columna
+          return this.columnesResoltes.filter(col => col.name !== 'accions').some(col => {
+            const valor = typeof col.field === 'function' ? col.field(s) : (s as any)[col.field];
+            const text = col.format ? col.format(valor, s) : valor;
+            return String(text ?? '').toLowerCase().includes(cerca);
+          });
+        }
+        return true;
+      });
+    },
+    nombreResoltesVisibles(): number {
+      return this.solicitudsResoltesFiltrades.length;
+    }
+  },
+  watch: {
+    //No deixem seleccionades sol·licituds que el filtre ha amagat, perquè no es tornin a signar sense voler
+    solicitudsResoltesFiltrades(visibles: SolicitudConvalidacio[]) {
+      const ids = new Set(visibles.map(s => s.id));
+      const seleccionades = this.selectedResoltes.filter(s => ids.has(s.id));
+      if (seleccionades.length !== this.selectedResoltes.length) {
+        this.selectedResoltes = seleccionades;
+      }
     }
   },
   created() {
@@ -339,7 +436,19 @@ export default defineComponent({
           label: 'Alumne',
           align: 'left',
           field: row => (row.alumne)?row.alumne.cognom1 + " " + row.alumne.cognom2 + ", " + row.alumne.nom:row.cognomsAlumneManual + ", " +row.nomAlumneManual,
-          sortable: true
+          sortable: true,
+          style: 'min-width: 140px'
+        },
+        {
+          name: 'datasignatura',
+          required: true,
+          label: 'Data signatura',
+          align: 'left',
+          field: row => row.dataSignatura || '',
+          format: val => val ? new Date(val).toLocaleString('ca-ES', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'}) : '',
+          sort: (a, b) => (a ? Date.parse(a) : 0) - (b ? Date.parse(b) : 0),
+          sortable: true,
+          style: 'white-space: nowrap'
         },
         {
           name: 'Grup',
@@ -360,7 +469,8 @@ export default defineComponent({
           label: 'Estudis',
           align: 'left',
           field: row => row.estudisEnCurs.nom,
-          sortable: true
+          sortable: true,
+          style: 'min-width: 140px; max-width: 240px'
         },
         {
           name: 'convalidacions_aprovades',
@@ -385,7 +495,7 @@ export default defineComponent({
             return resolucions.join(", ")
           },
           sortable: true,
-          style: 'overflow: hidden; white-space:pre-wrap; word-wrap:break-word; text-overflow: ellipsis;'
+          style: 'min-width: 160px; max-width: 320px; font-size: 12px'
         },
         {
           name: 'convalidacions_denegades',
@@ -407,7 +517,7 @@ export default defineComponent({
             return resolucions.join(", ")
           },
           sortable: true,
-          style: 'overflow: hidden; white-space:pre-wrap; word-wrap:break-word; text-overflow: ellipsis;'
+          style: 'min-width: 160px; max-width: 320px; font-size: 12px'
         },
         {
           name: 'accions',
@@ -514,6 +624,45 @@ export default defineComponent({
         window.location.reload();
       }, 1000);
     },
+    filtraCursActual() {
+      //El curs comença l'1 de setembre: abans de setembre som al curs que va començar l'any anterior
+      const avui = new Date();
+      const anyInici = avui.getMonth() >= 8 ? avui.getFullYear() : avui.getFullYear() - 1;
+      const format = (d: Date) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      this.filtreSignaturaDes = anyInici + '-09-01';
+      this.filtreSignaturaFins = format(avui);
+    },
+    seleccionaResoltesFiltrades() {
+      this.selectedResoltes = [...this.solicitudsResoltesFiltrades];
+    },
+    resignaSolicituds: async function () {
+      //Evitem llançar la signatura dues vegades (els correus s'enviarien repetits)
+      if(this.signant){
+        return;
+      }
+      this.signant = true;
+
+      //Copiam i buidam la selecció perquè no es puguin tornar a signar les mateixes
+      const solicituds = [...this.selectedResoltes];
+      this.selectedResoltes = [];
+
+      const resignatura = {
+        correccio: this.resignaturaCorreccio,
+        notificarTutors: this.resignaturaNotificarTutors
+      };
+
+      for(let solicitud of solicituds){
+        try {
+          await PDFService.generateSolicitud(solicitud,false,this.fileSignature,this.passwordSignature,resignatura)
+        } catch (e) {
+          console.error("Error tornant a signar la sol·licitud", solicitud, e);
+        }
+      }
+      //Redirect
+      setTimeout(function () {
+        window.location.reload();
+      }, 1000);
+    },
      wrapCsvValue: function(val:any, formatFn?:any, row?:any) {
       let formatted = formatFn !== void 0
         ? formatFn(val, row)
@@ -536,7 +685,7 @@ export default defineComponent({
     exportTable: function(){
       // naive encoding to csv format
       const content = [this.columnesResoltes.map(col => this.wrapCsvValue(col.label))].concat(
-        this.solicitudsResoltes.map( (row:any) => this.columnesResoltes.map(col => (col.name!=='accions')?this.wrapCsvValue(
+        this.solicitudsResoltesFiltrades.map( (row:any) => this.columnesResoltes.map(col => (col.name!=='accions')?this.wrapCsvValue(
           typeof col.field === 'function'
             ? col.field(row)
             : row[ col.field === void 0 ? col.name : col.field ],
